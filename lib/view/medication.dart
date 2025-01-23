@@ -164,6 +164,7 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
   final List<Map<String, dynamic>> medicines = [];
 
   void _showAddMedicineDialog() {
+    final TextEditingController doctornameController = TextEditingController();
     final TextEditingController nameController = TextEditingController();
     final TextEditingController mgController = TextEditingController();
 
@@ -187,6 +188,10 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                 decoration: InputDecoration(labelText: 'Medicine Name'),
               ),
               TextField(
+                controller: doctornameController,
+                decoration: InputDecoration(labelText: 'Doctor Name'),
+              ),
+              TextField(
                 controller: mgController,
                 decoration: InputDecoration(labelText: 'Mg'),
               ),
@@ -204,6 +209,7 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                 setState(() {
                   medicines.add({
                     'name': nameController.text,
+                    'doctor name': doctornameController.text,
                     'mg': mgController.text,
                   });
                 });
