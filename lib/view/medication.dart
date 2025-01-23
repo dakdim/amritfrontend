@@ -168,6 +168,7 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
     final TextEditingController doctornameController = TextEditingController();
     final TextEditingController nameController = TextEditingController();
     final TextEditingController mgController = TextEditingController();
+    TimeOfDay? selectedTime;
 
     showDialog(
       context: context,
@@ -196,6 +197,18 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                 controller: mgController,
                 decoration: InputDecoration(labelText: 'Mg'),
               ),
+              TextButton(
+                onPressed: () async {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (time != null) {
+                    selectedTime = time;
+                  }
+                },
+                child: Text('Select Time'),
+              ),
             ],
           ),
           actions: [
@@ -207,13 +220,16 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
             ),
             TextButton(
               onPressed: () {
-                setState(() {
-                  medicines.add({
-                    'name': nameController.text,
-                    'doctor name': doctornameController.text,
-                    'mg': mgController.text,
+                if (selectedTime != null) {
+                  setState(() {
+                    medicines.add({
+                      'name': nameController.text,
+                      'doctor name': doctornameController.text,
+                      'mg': mgController.text,
+                      'time': selectedTime!.format(context),
+                    });
                   });
-                });
+                }
                 Navigator.of(context).pop();
               },
               child: Text('Add'),
@@ -255,7 +271,8 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                         builder: (context) => DetailedViewPage(
                             medicineName: medicine['name']!,
                             mg: medicine['mg']!,
-                            doctorname: medicine['name']),
+                            doctorname: medicine['name'],
+                            time: medicine['time']),
                       ),
                     );
                   },
@@ -297,6 +314,9 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                           style:
                               TextStyle(fontSize: 12, color: Colors.grey[600]),
                         ),
+                        Text(
+                          medicine['time'],
+                        )
                       ],
                     ),
                   ),
@@ -315,13 +335,14 @@ class DetailedViewPage extends StatefulWidget {
   final String medicineName;
   final String doctorname;
   final String mg;
+  final String time;
 
-  const DetailedViewPage({
-    super.key,
-    required this.medicineName,
-    required this.mg,
-    required this.doctorname,
-  });
+  const DetailedViewPage(
+      {super.key,
+      required this.medicineName,
+      required this.mg,
+      required this.doctorname,
+      required this.time});
 
   @override
   _DetailedViewPageState createState() => _DetailedViewPageState();
@@ -366,12 +387,7 @@ class _DetailedViewPageState extends State<DetailedViewPage> {
                     onPressed: addMedicationRecord,
                     child: const Text('Add Current Timestamp'),
                   ),
-                  // const SizedBox(height: 10),
-                  // Text('Medicine: ${widget.medicineName}'),
-                  // Text('Dosage: ${widget.mg}'),
-                  // Text('Prescribed by: ${widget.doctorname}'),
                   const SizedBox(height: 20),
-
                   const SizedBox(height: 20),
                   DataTable(
                     columns: const [
