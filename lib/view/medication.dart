@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class MedicationPage extends StatefulWidget {
   const MedicationPage({super.key});
@@ -252,9 +253,9 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailedViewPage(
-                          medicineName: medicine['name']!,
-                          mg: medicine['mg']!,
-                        ),
+                            medicineName: medicine['name']!,
+                            mg: medicine['mg']!,
+                            doctorname: medicine['name']),
                       ),
                     );
                   },
@@ -285,6 +286,13 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
                           ),
                         ),
                         Text(
+                          medicine['doctor name']!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
                           '${medicine['mg']} mg',
                           style:
                               TextStyle(fontSize: 12, color: Colors.grey[600]),
@@ -303,45 +311,162 @@ class _MedicinePrescribedPageState extends State<MedicinePrescribedPage> {
   }
 }
 
-class DetailedViewPage extends StatelessWidget {
+class DetailedViewPage extends StatefulWidget {
   final String medicineName;
+  final String doctorname;
   final String mg;
 
   const DetailedViewPage({
     super.key,
     required this.medicineName,
     required this.mg,
+    required this.doctorname,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final String timeStamp =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+  _DetailedViewPageState createState() => _DetailedViewPageState();
+}
 
+class _DetailedViewPageState extends State<DetailedViewPage> {
+  List<Map<String, String>> medicationRecords = [];
+
+  void addMedicationRecord() {
+    final String fullTimestamp =
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    final String date = fullTimestamp.split(' ')[0];
+    final String time = fullTimestamp.split(' ')[1];
+
+    setState(() {
+      medicationRecords.add({'date': date, 'time': time});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detailed View'),
+        title: const Text('Detailed View'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Medicine: $medicineName',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      body: Column(
+        children: [
+          // Upper Section: Scrollable Timestamp Details
+          Expanded(
+            flex: 1,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Medication Details',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                    onPressed: addMedicationRecord,
+                    child: const Text('Add Current Timestamp'),
+                  ),
+                  // const SizedBox(height: 10),
+                  // Text('Medicine: ${widget.medicineName}'),
+                  // Text('Dosage: ${widget.mg}'),
+                  // Text('Prescribed by: ${widget.doctorname}'),
+                  const SizedBox(height: 20),
+
+                  const SizedBox(height: 20),
+                  DataTable(
+                    columns: const [
+                      DataColumn(
+                        label: Text(
+                          'Date',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Time',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                    rows: medicationRecords
+                        .map(
+                          (record) => DataRow(cells: [
+                            DataCell(Text(record['date']!)),
+                            DataCell(Text(record['time']!)),
+                          ]),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            Text(
-              'Dosage: $mg mg',
-              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+          ),
+          const Divider(),
+          // Lower Section: Graph Display
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: true),
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            '${value.toInt()}h',
+                            style: const TextStyle(fontSize: 12),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() < medicationRecords.length) {
+                            return Text(
+                              medicationRecords[value.toInt()]['date']!,
+                              style: const TextStyle(fontSize: 12),
+                            );
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: true),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: medicationRecords
+                          .asMap()
+                          .entries
+                          .map(
+                            (entry) => FlSpot(
+                              entry.key.toDouble(),
+                              double.parse(entry.value['time']!.split(':')[0]),
+                            ),
+                          )
+                          .toList(),
+                      isCurved: true,
+                      gradient: LinearGradient(
+                        colors: [Colors.blue, Colors.blueAccent],
+                      ),
+                      barWidth: 4,
+                      belowBarData: BarAreaData(show: false),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            Text(
-              'Viewed At: $timeStamp',
-              style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
