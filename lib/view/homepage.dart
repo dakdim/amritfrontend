@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'medication.dart';
+import 'profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,9 +18,10 @@ class _HomePageState extends State<HomePage> {
     const MedicationPage(),
     const Center(
         child: Text('Notification Page', style: TextStyle(fontSize: 24))),
-    const Center(child: Text('Profile Page', style: TextStyle(fontSize: 24))),
+    const ProfilePage(), // Use the ProfilePage widget here
   ];
 
+  // Function to handle bottom navigation bar taps
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index; // Update the selected index
