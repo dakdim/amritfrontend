@@ -61,6 +61,13 @@ class ProfilePage extends StatelessWidget {
                 // Add functionality here
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.details),
+              title: const Text("details"),
+              onTap: () {
+                // Add functionality here
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
