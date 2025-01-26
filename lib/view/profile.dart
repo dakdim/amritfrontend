@@ -7,9 +7,9 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
-        centerTitle: true,
-      ),
+          // title: const Text("Profile"),
+          // centerTitle: true,
+          ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -23,7 +23,7 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              "John Doe",
+              "Shailesh Devkota",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -31,7 +31,7 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             const Text(
-              "johndoe@example.com",
+              "devkotshailesh76@gmail.com",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
@@ -48,7 +48,7 @@ class ProfilePage extends StatelessWidget {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.history),
-              title: const Text("Order History"),
+              title: const Text("Medication History"),
               onTap: () {
                 // Add functionality here
               },

@@ -1,64 +1,86 @@
-import 'package:flutter/material.dart';
-
-class notification extends StatefulWidget {
-  const notification({super.key});
-
-  @override
-  State<notification> createState() => _nameState();
-}
-
-class _nameState extends State<notification> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
 // import 'package:flutter/material.dart';
+// // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-// class NotificationPage extends StatelessWidget {
-//   final List<String> notifications = [
-//     "time to take mdeicine"
-//   ]; // Example notifications
+// class NotificationPage extends StatefulWidget {
+//   @override
+//   _NotificationPageState createState() => _NotificationPageState();
+// }
 
-//   NotificationPage({Key? key}) : super(key: key);
+// class _NotificationPageState extends State<NotificationPage> {
+//   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     initializeNotifications();
+//   }
+
+//   void initializeNotifications() {
+//     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+//     const AndroidInitializationSettings initializationSettingsAndroid =
+//         AndroidInitializationSettings('@mipmap/ic_launcher');
+
+//     const InitializationSettings initializationSettings = InitializationSettings(
+//       android: initializationSettingsAndroid,
+//     );
+
+//     flutterLocalNotificationsPlugin.initialize(initializationSettings);
+//   }
+
+//   Future<void> scheduleNotification(DateTime scheduledTime) async {
+//     const AndroidNotificationDetails androidNotificationDetails =
+//         AndroidNotificationDetails(
+//       'notification_channel_id',
+//       'Scheduled Notifications',
+//       channelDescription: 'This channel is for scheduled notifications',
+//       importance: Importance.high,
+//       priority: Priority.high,
+//     );
+
+//     const NotificationDetails notificationDetails = NotificationDetails(
+//       android: androidNotificationDetails,
+//     );
+
+//     await flutterLocalNotificationsPlugin.zonedSchedule(
+//       0, // Notification ID
+//       'Reminder', // Notification Title
+//       'This is your scheduled notification!', // Notification Body
+//       scheduledTime,
+//       notificationDetails,
+//       androidAllowWhileIdle: true,
+//       uiLocalNotificationDateInterpretation:
+//           UILocalNotificationDateInterpretation.absoluteTime,
+//       matchDateTimeComponents: DateTimeComponents.time, // Ensures it triggers at the exact time
+//     );
+//   }
+
+//   void scheduleExampleNotification() {
+//     final now = DateTime.now();
+//     final scheduledTime = DateTime(
+//       now.year,
+//       now.month,
+//       now.day,
+//       now.hour,
+//       now.minute + 1, // Set it for 1 minute from now
+//     );
+
+//     scheduleNotification(scheduledTime);
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const Text('Notifications'),
-//         centerTitle: true,
-//         backgroundColor: const Color.fromRGBO(198, 160, 206, 1),
+//         title: const Text("Notification Page"),
 //       ),
-//       body: notifications.isNotEmpty
-//           ? ListView.builder(
-//               itemCount: notifications.length,
-//               itemBuilder: (context, index) {
-//                 return Card(
-//                   margin:
-//                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-//                   child: ListTile(
-//                     leading: const Icon(Icons.warning, color: Colors.red),
-//                     title: Text(notifications[index]),
-//                     subtitle: const Text('Tap for more details'),
-//                     onTap: () {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(
-//                           content: Text('Details for: ${notifications[index]}'),
-//                         ),
-//                       );
-//                     },
-//                   ),
-//                 );
-//               },
-//             )
-//           : const Center(
-//               child: Text(
-//                 'No unusual activity detected.',
-//                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//               ),
-//             ),
+//       body: Center(
+//         child: ElevatedButton(
+//           onPressed: scheduleExampleNotification,
+//           child: const Text("Schedule Notification"),
+//         ),
+//       ),
 //     );
 //   }
 // }
