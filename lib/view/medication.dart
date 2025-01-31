@@ -45,7 +45,25 @@ class _MedicationPageState extends State<MedicationPage> {
               ),
               TextField(
                 controller: dateController,
-                decoration: InputDecoration(labelText: 'Date'),
+                decoration: InputDecoration(
+                  labelText: 'Date',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        dateController.text = "${pickedDate.toLocal()}"
+                            .split(' ')[0]; // Formatting Date
+                      }
+                    },
+                  ),
+                ),
+                readOnly: true, // Prevents manual input
               ),
             ],
           ),

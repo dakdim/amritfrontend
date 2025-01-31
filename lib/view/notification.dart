@@ -1,86 +1,93 @@
-// import 'package:flutter/material.dart';
-// // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-// class NotificationPage extends StatefulWidget {
-//   @override
-//   _NotificationPageState createState() => _NotificationPageState();
-// }
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({Key? key}) : super(key: key);
 
-// class _NotificationPageState extends State<NotificationPage> {
-//   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  @override
+  _NotificationPageState createState() => _NotificationPageState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     initializeNotifications();
-//   }
+class _NotificationPageState extends State<NotificationPage> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-//   void initializeNotifications() {
-//     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  @override
+  void initState() {
+    super.initState();
+    tz.initializeTimeZones();
+    initializeNotifications();
+  }
 
-//     const AndroidInitializationSettings initializationSettingsAndroid =
-//         AndroidInitializationSettings('@mipmap/ic_launcher');
+  void initializeNotifications() {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-//     const InitializationSettings initializationSettings = InitializationSettings(
-//       android: initializationSettingsAndroid,
-//     );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-//     flutterLocalNotificationsPlugin.initialize(initializationSettings);
-//   }
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
 
-//   Future<void> scheduleNotification(DateTime scheduledTime) async {
-//     const AndroidNotificationDetails androidNotificationDetails =
-//         AndroidNotificationDetails(
-//       'notification_channel_id',
-//       'Scheduled Notifications',
-//       channelDescription: 'This channel is for scheduled notifications',
-//       importance: Importance.high,
-//       priority: Priority.high,
-//     );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
 
-//     const NotificationDetails notificationDetails = NotificationDetails(
-//       android: androidNotificationDetails,
-//     );
+  Future<void> scheduleNotification(DateTime scheduledTime) async {
+    final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
 
-//     await flutterLocalNotificationsPlugin.zonedSchedule(
-//       0, // Notification ID
-//       'Reminder', // Notification Title
-//       'This is your scheduled notification!', // Notification Body
-//       scheduledTime,
-//       notificationDetails,
-//       androidAllowWhileIdle: true,
-//       uiLocalNotificationDateInterpretation:
-//           UILocalNotificationDateInterpretation.absoluteTime,
-//       matchDateTimeComponents: DateTimeComponents.time, // Ensures it triggers at the exact time
-//     );
-//   }
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'notification_channel_id',
+      'Scheduled Notifications',
+      channelDescription: 'This channel is for scheduled notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
 
-//   void scheduleExampleNotification() {
-//     final now = DateTime.now();
-//     final scheduledTime = DateTime(
-//       now.year,
-//       now.month,
-//       now.day,
-//       now.hour,
-//       now.minute + 1, // Set it for 1 minute from now
-//     );
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+    );
 
-//     scheduleNotification(scheduledTime);
-//   }
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // Notification ID
+      'Reminder', // Notification Title
+      'This is your scheduled notification!', // Notification Body
+      tzScheduledTime, // Use TZDateTime
+      notificationDetails,
+      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exact, // Required for new versions
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Notification Page"),
-//       ),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: scheduleExampleNotification,
-//           child: const Text("Schedule Notification"),
-//         ),
-//       ),
-//     );
-//   }
-// }
+  void scheduleExampleNotification() {
+    final now = DateTime.now();
+    final scheduledTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+      now.minute + 1, // Set it for 1 minute from now
+    );
+
+    scheduleNotification(scheduledTime);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Notification Page"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: scheduleExampleNotification,
+          child: const Text("Schedule Notification"),
+        ),
+      ),
+    );
+  }
+}
