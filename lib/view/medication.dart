@@ -94,9 +94,6 @@ class _MedicationPageState extends State<MedicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Medication Page'),
-      ),
       body: medications.isEmpty
           ? Center(
               child: Text(
