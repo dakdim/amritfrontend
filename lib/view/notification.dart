@@ -26,7 +26,8 @@ class _NotificationPageState extends State<NotificationPage> {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
     );
 
@@ -34,7 +35,8 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Future<void> scheduleNotification(DateTime scheduledTime) async {
-    final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    final tz.TZDateTime tzScheduledTime =
+        tz.TZDateTime.from(scheduledTime, tz.local);
 
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
@@ -56,7 +58,7 @@ class _NotificationPageState extends State<NotificationPage> {
       tzScheduledTime, // Use TZDateTime
       notificationDetails,
       androidAllowWhileIdle: true,
-      androidScheduleMode: AndroidScheduleMode.exact, // Required for new versions
+      androidScheduleMode: AndroidScheduleMode.exact,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
@@ -81,11 +83,60 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notification Page"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: scheduleExampleNotification,
-          child: const Text("Schedule Notification"),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Schedule a Notification",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Tap the button below to schedule a notification 1 minute from now.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: scheduleExampleNotification,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                      ),
+                      child: const Text(
+                        "Schedule Notification",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
