@@ -1,5 +1,5 @@
+import 'package:amrit_app/view/homepage.dart';
 import 'package:flutter/material.dart';
-import 'view/homepage.dart'; // Import home.dart
 
 void main() {
   runApp(const MyApp()); // Root widget
